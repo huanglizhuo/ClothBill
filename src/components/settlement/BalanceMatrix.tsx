@@ -18,8 +18,6 @@ export default function BalanceMatrix({ balances, members, currency }: BalanceMa
 
         const isPositive = amount > 0
         const isNegative = amount < 0
-        const isZero = amount === 0
-
         return (
           <div
             key={memberId}
