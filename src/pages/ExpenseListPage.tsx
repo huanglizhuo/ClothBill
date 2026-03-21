@@ -13,6 +13,7 @@ import { CATEGORIES } from '../constants/categories'
 import { formatAmount } from '../lib/currency'
 import type { Expense, Member } from '../types'
 
+
 type GroupBy = 'date' | 'category' | 'payer' | 'member'
 type ViewMode = 'list' | 'chart'
 
@@ -108,22 +109,12 @@ export default function ExpenseListPage() {
   const { isEditable, password } = useTripStore()
   const { lockIcon, passwordModal } = useLockToggle(tripId)
 
-  const [filterCategory, setFilterCategory] = useState<string>('')
-  const [filterPayer, setFilterPayer] = useState<string>('')
   const [groupBy, setGroupBy] = useState<GroupBy>('date')
   const [viewMode, setViewMode] = useState<ViewMode>('list')
 
-  const filteredExpenses = useMemo(() => {
-    return expenses.filter((e) => {
-      if (filterCategory && e.category !== filterCategory) return false
-      if (filterPayer && e.paidBy !== filterPayer) return false
-      return true
-    })
-  }, [expenses, filterCategory, filterPayer])
-
   const groups = useMemo(
-    () => groupExpenses(filteredExpenses, groupBy, members),
-    [filteredExpenses, groupBy, members]
+    () => groupExpenses(expenses, groupBy, members),
+    [expenses, groupBy, members]
   )
 
   const chartItems = useMemo(
@@ -149,35 +140,6 @@ export default function ExpenseListPage() {
       <PageHeader title="消费记录" rightAction={lockIcon} />
 
       <main className="px-4 py-4 pb-20">
-        {/* Filter bar */}
-        <div className="flex gap-2 py-2">
-          <select
-            value={filterCategory}
-            onChange={(e) => setFilterCategory(e.target.value)}
-            className="flex-1 appearance-none rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-700 focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500"
-          >
-            <option value="">全部分类</option>
-            {CATEGORIES.map((cat) => (
-              <option key={cat.id} value={cat.id}>
-                {cat.icon} {cat.name}
-              </option>
-            ))}
-          </select>
-
-          <select
-            value={filterPayer}
-            onChange={(e) => setFilterPayer(e.target.value)}
-            className="flex-1 appearance-none rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-700 focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500"
-          >
-            <option value="">全部成员</option>
-            {members.map((m) => (
-              <option key={m.id} value={m.id}>
-                {m.name}
-              </option>
-            ))}
-          </select>
-        </div>
-
         {/* Group selector + view toggle */}
         <div className="flex items-center justify-between py-2">
           <div className="flex gap-1">
@@ -216,7 +178,7 @@ export default function ExpenseListPage() {
         </div>
 
         {/* Content */}
-        {filteredExpenses.length > 0 ? (
+        {expenses.length > 0 ? (
           viewMode === 'chart' ? (
             <div className="rounded-2xl border border-gray-200 bg-white p-4">
               <ExpenseChart items={chartItems} />
@@ -253,7 +215,7 @@ export default function ExpenseListPage() {
           <EmptyState
             icon="📋"
             title="暂无消费记录"
-            description={filterCategory || filterPayer ? '尝试调整筛选条件' : undefined}
+            description={undefined}
           />
         )}
       </main>
