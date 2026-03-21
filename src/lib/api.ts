@@ -88,7 +88,7 @@ export async function getExpenses(tripId: string): Promise<Expense[]> {
     .from('expenses')
     .select('*, expense_splits(*)')
     .eq('trip_id', tripId)
-    .order('date', { ascending: false })
+    .order('created_at', { ascending: false })
   if (error) throw error
   return (data ?? []).map((row) => ({
     id: row.id,

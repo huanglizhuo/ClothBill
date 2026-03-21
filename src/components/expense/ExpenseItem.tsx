@@ -19,7 +19,20 @@ export default function ExpenseItem({ expense, members, onDelete, editable }: Ex
   const currencyInfo = CURRENCIES.find((c) => c.code === expense.currency)
   const symbol = currencyInfo?.symbol ?? expense.currency
   const payer = members.find((m) => m.id === expense.paidBy)
-  const splitCount = expense.splits.length
+  const splitDetail = expense.splits
+    .map((s) => {
+      const name = members.find((m) => m.id === s.memberId)?.name ?? '未知'
+      let share: number
+      if (expense.splitType === 'equal') {
+        share = expense.amount / expense.splits.length
+      } else if (expense.splitType === 'percentage') {
+        share = ((s.sharePercentage ?? 0) / 100) * expense.amount
+      } else {
+        share = s.shareAmount ?? 0
+      }
+      return `${name} ${share.toFixed(currencyInfo?.decimals ?? 2)}`
+    })
+    .join(' / ')
 
   const handleClick = () => {
     if (trip) {
@@ -43,7 +56,7 @@ export default function ExpenseItem({ expense, members, onDelete, editable }: Ex
           {expense.description || '未命名'}
         </p>
         <p className="mt-0.5 text-xs text-gray-400">
-          {expense.date.slice(0, 10)} · {payer?.name ?? '未知'} 付款 · {splitCount}人分摊
+          {expense.date.slice(0, 10)} · {payer?.name ?? '未知'} 付款 · {splitDetail}
         </p>
         {expense.category === 'accommodation' && (expense.checkIn || expense.checkOut) && (
           <p className="mt-0.5 text-xs text-blue-400">

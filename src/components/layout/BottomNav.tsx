@@ -17,9 +17,7 @@ export default function BottomNav({ tripId }: BottomNavProps) {
   const linkClass = ({ isActive }: { isActive: boolean }) =>
     `${baseClass} ${isActive ? activeClass : inactiveClass}`
 
-  const showFab = isEditable && (
-    pathname === `/bill/${tripId}` || pathname === `/bill/${tripId}/expenses`
-  )
+  const showFab = isEditable && pathname === `/bill/${tripId}`
 
   return (
     <div className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full md:max-w-2xl lg:max-w-4xl z-10">
@@ -38,17 +36,6 @@ export default function BottomNav({ tripId }: BottomNavProps) {
 
       <nav className="flex h-16 items-center border-t border-gray-200 bg-white pb-[env(safe-area-inset-bottom)]">
         <NavLink to={`/bill/${tripId}`} end className={linkClass}>
-          {({ isActive }) => (
-            <>
-              <svg className="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={isActive ? 2.5 : 2} strokeLinecap="round" strokeLinejoin="round">
-                <path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-4 0a1 1 0 01-1-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 01-1 1m-2 0h2" />
-              </svg>
-              <span>概览</span>
-            </>
-          )}
-        </NavLink>
-
-        <NavLink to={`/bill/${tripId}/expenses`} className={linkClass}>
           {({ isActive }) => (
             <>
               <svg className="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={isActive ? 2.5 : 2} strokeLinecap="round" strokeLinejoin="round">
