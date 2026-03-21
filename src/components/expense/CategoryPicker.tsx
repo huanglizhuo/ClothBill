@@ -9,7 +9,7 @@ export default function CategoryPicker({ value, onChange }: CategoryPickerProps)
   return (
     <div className="space-y-2">
       <label className="text-sm font-medium text-gray-500">分类</label>
-      <div className="grid grid-cols-4 gap-2">
+      <div className="grid grid-cols-4 md:grid-cols-6 gap-2">
         {CATEGORIES.map((cat) => (
           <button
             key={cat.id}

@@ -1,56 +1,11 @@
-import type { Expense, Member, ExchangeRates, SettlementTransfer } from '../types'
-import { convertAmount } from './currency'
+import type { Expense, Member, SettlementTransfer } from '../types'
 
 /**
- * Calculate the net balance for every member.
- * Positive = is owed money (creditor), negative = owes money (debtor).
- * All amounts are converted to the settlement currency.
- */
-export function calculateBalances(
-  expenses: Expense[],
-  members: Member[],
-  rates: ExchangeRates,
-  settlementCurrency: string
-): Map<string, number> {
-  const balances = new Map<string, number>()
-
-  // Initialise all members to 0
-  for (const m of members) {
-    balances.set(m.id, 0)
-  }
-
-  for (const expense of expenses) {
-    const amountInSettlement = convertAmount(
-      expense.amount,
-      expense.currency,
-      settlementCurrency,
-      rates
-    )
-
-    // The payer paid the full amount, so credit them
-    balances.set(
-      expense.paidBy,
-      (balances.get(expense.paidBy) ?? 0) + amountInSettlement
-    )
-
-    // Determine each member's share
-    const memberShares = resolveShares(expense, amountInSettlement)
-
-    // Each member owes their share, so debit them
-    for (const [memberId, share] of memberShares) {
-      balances.set(memberId, (balances.get(memberId) ?? 0) - share)
-    }
-  }
-
-  return balances
-}
-
-/**
- * Resolve the shares for a single expense (already converted to settlement currency).
+ * Resolve the shares for a single expense in its own currency.
  */
 function resolveShares(
   expense: Expense,
-  amountInSettlement: number
+  amount: number
 ): Map<string, number> {
   const shares = new Map<string, number>()
 
@@ -58,14 +13,13 @@ function resolveShares(
     case 'equal': {
       const count = expense.splits.length
       if (count === 0) break
-      const each = amountInSettlement / count
+      const each = amount / count
       for (const s of expense.splits) {
         shares.set(s.memberId, each)
       }
       break
     }
     case 'exact': {
-      // shareAmount is in the expense's original currency; scale proportionally
       const totalOriginal = expense.splits.reduce(
         (sum, s) => sum + (s.shareAmount ?? 0),
         0
@@ -73,14 +27,14 @@ function resolveShares(
       if (totalOriginal === 0) break
       for (const s of expense.splits) {
         const ratio = (s.shareAmount ?? 0) / totalOriginal
-        shares.set(s.memberId, ratio * amountInSettlement)
+        shares.set(s.memberId, ratio * amount)
       }
       break
     }
     case 'percentage': {
       for (const s of expense.splits) {
         const pct = (s.sharePercentage ?? 0) / 100
-        shares.set(s.memberId, pct * amountInSettlement)
+        shares.set(s.memberId, pct * amount)
       }
       break
     }
@@ -91,10 +45,8 @@ function resolveShares(
 
 /**
  * Simplify debts using a greedy algorithm.
- * Sort creditors descending and debtors ascending (most negative first),
- * then pair them off until all balances are settled.
  */
-export function simplifyDebts(
+function simplifyDebts(
   balances: Map<string, number>
 ): SettlementTransfer[] {
   const EPSILON = 0.01
@@ -106,11 +58,10 @@ export function simplifyDebts(
     if (balance > EPSILON) {
       creditors.push({ id, amount: balance })
     } else if (balance < -EPSILON) {
-      debtors.push({ id, amount: -balance }) // store as positive
+      debtors.push({ id, amount: -balance })
     }
   }
 
-  // Sort creditors descending by amount, debtors descending by amount
   creditors.sort((a, b) => b.amount - a.amount)
   debtors.sort((a, b) => b.amount - a.amount)
 
@@ -135,4 +86,46 @@ export function simplifyDebts(
   }
 
   return transfers
+}
+
+/**
+ * Calculate per-currency balances and simplified transfers.
+ * No conversion — amounts stay in original currency.
+ */
+export function calculatePerCurrencySettlements(
+  expenses: Expense[],
+  members: Member[]
+): Map<string, { balances: Map<string, number>; transfers: SettlementTransfer[]; expenses: Expense[] }> {
+  const byCurrency = new Map<string, Expense[]>()
+  for (const expense of expenses) {
+    const list = byCurrency.get(expense.currency) ?? []
+    list.push(expense)
+    byCurrency.set(expense.currency, list)
+  }
+
+  const result = new Map<string, { balances: Map<string, number>; transfers: SettlementTransfer[]; expenses: Expense[] }>()
+
+  for (const [currency, currencyExpenses] of byCurrency) {
+    const balances = new Map<string, number>()
+    for (const m of members) {
+      balances.set(m.id, 0)
+    }
+
+    for (const expense of currencyExpenses) {
+      balances.set(
+        expense.paidBy,
+        (balances.get(expense.paidBy) ?? 0) + expense.amount
+      )
+
+      const shares = resolveShares(expense, expense.amount)
+      for (const [memberId, share] of shares) {
+        balances.set(memberId, (balances.get(memberId) ?? 0) - share)
+      }
+    }
+
+    const transfers = simplifyDebts(balances)
+    result.set(currency, { balances, transfers, expenses: currencyExpenses })
+  }
+
+  return result
 }

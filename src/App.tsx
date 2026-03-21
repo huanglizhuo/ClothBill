@@ -8,7 +8,7 @@ import SettingsPage from './pages/SettingsPage'
 
 export default function App() {
   return (
-    <div className="min-h-full max-w-lg mx-auto bg-white shadow-sm">
+    <div className="relative min-h-full mx-auto bg-white md:max-w-2xl lg:max-w-4xl md:shadow-sm">
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/trip/:tripId" element={<TripDashboardPage />} />

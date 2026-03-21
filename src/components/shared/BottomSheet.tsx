@@ -65,7 +65,7 @@ export default function BottomSheet({ open, onClose, title, children }: BottomSh
   if (!visible) return null
 
   return (
-    <div className="fixed inset-0 z-50 flex items-end">
+    <div className="fixed inset-0 z-50 flex items-end justify-center">
       {/* Backdrop */}
       <div
         className={`absolute inset-0 bg-black transition-opacity duration-300 ${
@@ -77,7 +77,7 @@ export default function BottomSheet({ open, onClose, title, children }: BottomSh
       {/* Sheet */}
       <div
         ref={sheetRef}
-        className={`relative w-full max-h-[80vh] rounded-t-2xl bg-white shadow-xl transition-transform duration-300 ease-out ${
+        className={`relative w-full md:max-w-2xl lg:max-w-4xl max-h-[80vh] rounded-t-2xl bg-white shadow-xl transition-transform duration-300 ease-out ${
           animate ? 'translate-y-0' : 'translate-y-full'
         }`}
         onTouchStart={handleTouchStart}

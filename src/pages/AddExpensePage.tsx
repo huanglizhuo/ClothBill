@@ -122,7 +122,7 @@ export default function AddExpensePage() {
     <div className="min-h-screen bg-gray-50">
       <PageHeader title={isEdit ? '编辑消费' : '添加消费'} />
 
-      <main className="space-y-6 px-4 pt-14 pb-8">
+      <main className="space-y-6 px-4 py-6 pb-8 md:max-w-lg md:mx-auto">
         {/* Amount */}
         <section className="rounded-2xl border border-gray-200 bg-white p-4">
           <AmountInput

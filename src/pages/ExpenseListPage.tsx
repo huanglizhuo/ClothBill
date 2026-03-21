@@ -46,7 +46,7 @@ export default function ExpenseListPage() {
     <div className="min-h-screen bg-gray-50">
       <PageHeader title="消费记录" rightAction={lockIcon} />
 
-      <main className="px-4 pt-14 pb-20">
+      <main className="px-4 py-4 pb-20">
         {/* Filter bar */}
         <div className="flex gap-2 py-4">
           <select

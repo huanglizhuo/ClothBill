@@ -77,7 +77,7 @@ export default function TripDashboardPage() {
         onBack={() => navigate('/')}
       />
 
-      <main className="space-y-6 px-4 pt-14 pb-20">
+      <main className="space-y-6 px-4 py-6 pb-20">
         {/* Members section */}
         <section className="pt-4">
           <h2 className="mb-3 text-sm font-medium text-gray-500">成员</h2>
@@ -149,7 +149,7 @@ export default function TripDashboardPage() {
           </p>
 
           {members.length > 0 && expenses.length > 0 && (
-            <div className="mt-3 grid grid-cols-2 gap-2">
+            <div className="mt-3 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2">
               {members.map((member) => {
                 const balance = balances.get(member.id) ?? 0
                 const paidTotal = expenses

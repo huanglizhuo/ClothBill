@@ -1,8 +1,8 @@
 import { useMemo } from 'react'
 import { useTripStore } from '../store/tripStore'
 import { useSettingsStore } from '../store/settingsStore'
-import { calculateBalances, simplifyDebts } from '../lib/settlement'
-import type { SettlementTransfer } from '../types'
+import { calculatePerCurrencySettlements } from '../lib/settlement'
+import { convertAmount } from '../lib/currency'
 
 export function useSettlement() {
   const { members, expenses, trip } = useTripStore()
@@ -10,14 +10,26 @@ export function useSettlement() {
 
   const settlementCurrency = trip?.settlementCurrency ?? 'CNY'
 
+  const perCurrencySettlements = useMemo(() => {
+    if (members.length === 0) return new Map()
+    return calculatePerCurrencySettlements(expenses, members)
+  }, [expenses, members])
+
+  // Derive overall balances in settlement currency from per-currency balances
   const balances = useMemo(() => {
-    if (!exchangeRates || members.length === 0) return new Map<string, number>()
-    return calculateBalances(expenses, members, exchangeRates, settlementCurrency)
-  }, [expenses, members, exchangeRates, settlementCurrency])
+    const result = new Map<string, number>()
+    if (!exchangeRates) return result
+    for (const m of members) {
+      result.set(m.id, 0)
+    }
+    for (const [currency, { balances: currBalances }] of perCurrencySettlements) {
+      for (const [memberId, amount] of currBalances) {
+        const converted = convertAmount(amount, currency, settlementCurrency, exchangeRates)
+        result.set(memberId, (result.get(memberId) ?? 0) + converted)
+      }
+    }
+    return result
+  }, [perCurrencySettlements, exchangeRates, settlementCurrency, members])
 
-  const transfers: SettlementTransfer[] = useMemo(() => {
-    return simplifyDebts(balances)
-  }, [balances])
-
-  return { balances, transfers, settlementCurrency }
+  return { balances, perCurrencySettlements, settlementCurrency }
 }

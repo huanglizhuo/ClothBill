@@ -17,18 +17,17 @@ export default function BottomNav({ tripId }: BottomNavProps) {
   const linkClass = ({ isActive }: { isActive: boolean }) =>
     `${baseClass} ${isActive ? activeClass : inactiveClass}`
 
-  // Show FAB on dashboard and expenses pages
   const showFab = isEditable && (
     pathname === `/trip/${tripId}` || pathname === `/trip/${tripId}/expenses`
   )
 
   return (
-    <>
+    <div className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full md:max-w-2xl lg:max-w-4xl z-10">
       {showFab && (
         <button
           type="button"
           onClick={() => navigate(`/trip/${tripId}/expense`)}
-          className="fixed bottom-20 right-4 z-20 flex h-14 w-14 items-center justify-center rounded-full bg-primary-600 text-white shadow-lg active:bg-primary-700"
+          className="absolute -top-20 right-4 z-20 flex h-14 w-14 items-center justify-center rounded-full bg-primary-600 text-white shadow-lg active:bg-primary-700"
           aria-label="添加消费"
         >
           <svg className="h-7 w-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5} strokeLinecap="round" strokeLinejoin="round">
@@ -37,7 +36,7 @@ export default function BottomNav({ tripId }: BottomNavProps) {
         </button>
       )}
 
-      <nav className="fixed bottom-0 left-0 right-0 z-10 flex h-16 items-center border-t border-gray-200 bg-white pb-[env(safe-area-inset-bottom)]">
+      <nav className="flex h-16 items-center border-t border-gray-200 bg-white pb-[env(safe-area-inset-bottom)]">
         <NavLink to={`/trip/${tripId}`} end className={linkClass}>
           {({ isActive }) => (
             <>
@@ -84,6 +83,6 @@ export default function BottomNav({ tripId }: BottomNavProps) {
           )}
         </NavLink>
       </nav>
-    </>
+    </div>
   )
 }

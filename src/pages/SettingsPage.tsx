@@ -132,7 +132,7 @@ export default function SettingsPage() {
     <div className="min-h-screen bg-gray-50 pb-20">
       <PageHeader title="设置" rightAction={lockIcon} />
 
-      <main className="space-y-6 px-4 pt-14 pb-8">
+      <main className="space-y-6 px-4 py-6 pb-8 md:max-w-lg md:mx-auto">
         {error && (
           <p className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-600">{error}</p>
         )}
