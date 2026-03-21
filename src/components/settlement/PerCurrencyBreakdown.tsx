@@ -84,7 +84,7 @@ function CurrencyCard({
   return (
     <div className="rounded-xl border border-gray-200 bg-white overflow-hidden">
       <div className="flex items-center justify-between px-4 pt-4 pb-2">
-        <h4 className="text-sm font-semibold text-gray-700">{currency} 消费结算</h4>
+        <h4 className="text-sm font-semibold text-gray-700">{currency} 账单结算</h4>
         <button
           type="button"
           onClick={() => setSimplified(!simplified)}

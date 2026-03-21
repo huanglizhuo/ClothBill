@@ -24,7 +24,7 @@ export default function SettingsPage() {
 
   const handleDeleteTrip = async () => {
     if (!tripId || !password) return
-    if (!confirm('确定要删除该账单吗？删除后不可恢复，所有消费记录将被清除。')) return
+    if (!confirm('确定要删除该账单吗？删除后不可恢复，所有账单记录将被清除。')) return
     setError('')
     setSaving(true)
     try {
@@ -285,7 +285,7 @@ export default function SettingsPage() {
         {isEditable && (
           <section className="rounded-2xl border border-red-200 bg-white p-4">
             <h2 className="mb-3 text-sm font-semibold text-red-600">危险操作</h2>
-            <p className="mb-3 text-xs text-gray-500">删除账单后，所有消费记录将被永久清除且不可恢复。</p>
+            <p className="mb-3 text-xs text-gray-500">删除账单后，所有账单记录将被永久清除且不可恢复。</p>
             <button
               type="button"
               onClick={handleDeleteTrip}

@@ -20,7 +20,7 @@ export default function SettlementPage() {
       <div className="min-h-screen pb-20">
         <PageHeader title="结算" rightAction={lockIcon} />
         <div className="px-4 py-12">
-          <EmptyState icon="📊" title="暂无消费记录" description="添加消费后即可查看结算" />
+          <EmptyState icon="📊" title="暂无账单记录" description="添加账单后即可查看结算" />
         </div>
         <BottomNav tripId={tripId!} />
         {passwordModal}

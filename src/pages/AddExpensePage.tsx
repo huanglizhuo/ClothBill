@@ -125,7 +125,7 @@ export default function AddExpensePage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <PageHeader title={isEdit ? '编辑消费' : '添加消费'} />
+      <PageHeader title={isEdit ? '编辑账单' : '添加账单'} />
 
       <main className="space-y-6 px-4 py-6 pb-8 md:max-w-lg md:mx-auto">
         {/* Amount */}
@@ -146,7 +146,7 @@ export default function AddExpensePage() {
             type="text"
             value={description}
             onChange={(e) => setDescription(e.target.value)}
-            placeholder="消费描述"
+            placeholder="账单描述"
             className="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500"
           />
         </section>
@@ -227,7 +227,7 @@ export default function AddExpensePage() {
           disabled={submitting}
           className="w-full rounded-lg bg-primary-600 py-3 text-sm font-medium text-white active:bg-primary-700 disabled:opacity-50"
         >
-          {submitting ? '保存中...' : isEdit ? '保存修改' : '添加消费'}
+          {submitting ? '保存中...' : isEdit ? '保存修改' : '添加账单'}
         </button>
       </main>
     </div>

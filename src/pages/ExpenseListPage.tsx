@@ -20,7 +20,7 @@ const GROUP_OPTIONS: { key: GroupBy; label: string }[] = [
   { key: 'date', label: '日期' },
   { key: 'category', label: '分类' },
   { key: 'payer', label: '付款人' },
-  { key: 'member', label: '消费人' },
+  { key: 'member', label: '账单人' },
 ]
 
 function getGroupKey(expense: Expense, groupBy: GroupBy): string[] {
@@ -123,7 +123,7 @@ export default function ExpenseListPage() {
 
   const handleDelete = async (expenseId: string) => {
     if (!tripId || !password) return
-    if (!window.confirm('确定要删除这笔消费吗？')) return
+    if (!window.confirm('确定要删除这笔账单吗？')) return
     try {
       await api.deleteExpense(tripId, password, expenseId)
       await reload()
@@ -304,7 +304,7 @@ export default function ExpenseListPage() {
         ) : (
           <EmptyState
             icon="📋"
-            title="暂无消费记录"
+            title="暂无账单记录"
             description={undefined}
           />
         )}

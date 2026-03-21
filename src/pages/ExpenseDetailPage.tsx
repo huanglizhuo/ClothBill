@@ -21,7 +21,7 @@ export default function ExpenseDetailPage() {
   if (!expense) {
     return (
       <div className="min-h-screen bg-gray-50">
-        <PageHeader title="消费详情" />
+        <PageHeader title="账单详情" />
         <p className="px-4 py-12 text-center text-sm text-gray-400">加载中...</p>
       </div>
     )
@@ -42,7 +42,7 @@ export default function ExpenseDetailPage() {
 
   const handleDelete = async () => {
     if (!password) return
-    if (!window.confirm('确定要删除这笔消费吗？')) return
+    if (!window.confirm('确定要删除这笔账单吗？')) return
     try {
       await api.deleteExpense(tripId, password, expenseId)
       await reload()
@@ -54,7 +54,7 @@ export default function ExpenseDetailPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <PageHeader title="消费详情" rightAction={lockIcon} />
+      <PageHeader title="账单详情" rightAction={lockIcon} />
 
       <main className="space-y-4 px-4 py-6 pb-8 md:max-w-lg md:mx-auto">
         {/* Amount & description */}
