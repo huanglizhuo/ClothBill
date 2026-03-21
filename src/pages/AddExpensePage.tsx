@@ -38,7 +38,7 @@ export default function AddExpensePage() {
   // Redirect if not editable
   useEffect(() => {
     if (trip && !isEditable) {
-      navigate(`/trip/${tripId}`, { replace: true })
+      navigate(`/bill/${tripId}`, { replace: true })
     }
   }, [trip, isEditable, tripId, navigate])
 
@@ -110,7 +110,7 @@ export default function AddExpensePage() {
         )
       }
       await reload()
-      navigate(`/trip/${tripId}`, { replace: true })
+      navigate(`/bill/${tripId}`, { replace: true })
     } catch (err) {
       setError(err instanceof Error ? err.message : '保存失败，请重试')
     } finally {

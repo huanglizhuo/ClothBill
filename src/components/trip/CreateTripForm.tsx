@@ -91,7 +91,7 @@ export default function CreateTripForm() {
       // Cache password for immediate edit access
       setEditable(true, password)
 
-      navigate(`/trip/${tripId}`)
+      navigate(`/bill/${tripId}`)
     } catch (err) {
       setError(err instanceof Error ? err.message : '创建失败，请重试')
     } finally {

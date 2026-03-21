@@ -18,7 +18,7 @@ export default function BottomNav({ tripId }: BottomNavProps) {
     `${baseClass} ${isActive ? activeClass : inactiveClass}`
 
   const showFab = isEditable && (
-    pathname === `/trip/${tripId}` || pathname === `/trip/${tripId}/expenses`
+    pathname === `/bill/${tripId}` || pathname === `/bill/${tripId}/expenses`
   )
 
   return (
@@ -26,7 +26,7 @@ export default function BottomNav({ tripId }: BottomNavProps) {
       {showFab && (
         <button
           type="button"
-          onClick={() => navigate(`/trip/${tripId}/expense`)}
+          onClick={() => navigate(`/bill/${tripId}/expense`)}
           className="absolute -top-20 right-4 z-20 flex h-14 w-14 items-center justify-center rounded-full bg-primary-600 text-white shadow-lg active:bg-primary-700"
           aria-label="添加消费"
         >
@@ -37,7 +37,7 @@ export default function BottomNav({ tripId }: BottomNavProps) {
       )}
 
       <nav className="flex h-16 items-center border-t border-gray-200 bg-white pb-[env(safe-area-inset-bottom)]">
-        <NavLink to={`/trip/${tripId}`} end className={linkClass}>
+        <NavLink to={`/bill/${tripId}`} end className={linkClass}>
           {({ isActive }) => (
             <>
               <svg className="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={isActive ? 2.5 : 2} strokeLinecap="round" strokeLinejoin="round">
@@ -48,7 +48,7 @@ export default function BottomNav({ tripId }: BottomNavProps) {
           )}
         </NavLink>
 
-        <NavLink to={`/trip/${tripId}/expenses`} className={linkClass}>
+        <NavLink to={`/bill/${tripId}/expenses`} className={linkClass}>
           {({ isActive }) => (
             <>
               <svg className="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={isActive ? 2.5 : 2} strokeLinecap="round" strokeLinejoin="round">
@@ -59,7 +59,7 @@ export default function BottomNav({ tripId }: BottomNavProps) {
           )}
         </NavLink>
 
-        <NavLink to={`/trip/${tripId}/settle`} className={linkClass}>
+        <NavLink to={`/bill/${tripId}/settle`} className={linkClass}>
           {({ isActive }) => (
             <>
               <svg className="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={isActive ? 2.5 : 2} strokeLinecap="round" strokeLinejoin="round">
@@ -71,7 +71,7 @@ export default function BottomNav({ tripId }: BottomNavProps) {
           )}
         </NavLink>
 
-        <NavLink to={`/trip/${tripId}/settings`} className={linkClass}>
+        <NavLink to={`/bill/${tripId}/settings`} className={linkClass}>
           {({ isActive }) => (
             <>
               <svg className="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={isActive ? 2.5 : 2} strokeLinecap="round" strokeLinejoin="round">

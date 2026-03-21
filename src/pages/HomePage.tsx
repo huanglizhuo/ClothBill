@@ -18,12 +18,12 @@ export default function HomePage() {
 
     const match = trimmed.match(UUID_RE)
     if (match) {
-      navigate(`/trip/${match[0]}`)
+      navigate(`/bill/${match[0]}`)
       return
     }
 
     if (/^[\w-]{6,}$/.test(trimmed)) {
-      navigate(`/trip/${trimmed}`)
+      navigate(`/bill/${trimmed}`)
       return
     }
 

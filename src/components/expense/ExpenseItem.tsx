@@ -23,7 +23,7 @@ export default function ExpenseItem({ expense, members, onDelete, editable }: Ex
 
   const handleClick = () => {
     if (trip) {
-      navigate(`/trip/${trip.id}/expense/${expense.id}`)
+      navigate(`/bill/${trip.id}/expense/${expense.id}`)
     }
   }
 

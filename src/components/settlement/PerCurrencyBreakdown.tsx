@@ -142,7 +142,7 @@ function TransferRow({
                   <div
                     key={i}
                     className="rounded-lg bg-gray-50 p-3 text-xs text-gray-600 active:bg-gray-100 cursor-pointer"
-                    onClick={() => navigate(`/trip/${tripId}/expense/${d.expense.id}`)}
+                    onClick={() => navigate(`/bill/${tripId}/expense/${d.expense.id}`)}
                   >
                     <div className="flex items-center justify-between">
                       <p className="font-medium text-gray-700">{d.expense.description}</p>

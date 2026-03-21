@@ -181,7 +181,7 @@ export default function TripDashboardPage() {
           <div className="mb-3 flex items-center justify-between">
             <h2 className="text-sm font-medium text-gray-500">最近消费</h2>
             {expenses.length > 3 && (
-              <Link to={`/trip/${tripId}/expenses`} className="text-xs text-primary-600">
+              <Link to={`/bill/${tripId}/expenses`} className="text-xs text-primary-600">
                 查看全部
               </Link>
             )}
