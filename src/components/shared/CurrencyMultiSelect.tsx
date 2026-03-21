@@ -42,7 +42,7 @@ export default function CurrencyMultiSelect({ selected, onChange, disabledCodes 
         placeholder="搜索货币（代码或名称）"
         className="mb-3 w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500"
       />
-      <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2 overflow-y-auto">
+      <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2 max-h-60 overflow-y-auto">
         {sorted.map((c) => {
           const isSelected = selectedSet.has(c.code)
           const isDisabled = disabledCodes.includes(c.code) && isSelected
