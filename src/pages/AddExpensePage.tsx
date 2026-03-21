@@ -66,12 +66,13 @@ export default function AddExpensePage() {
     }
   }, [members, paidBy, isEdit])
 
-  // Set default currency from trip
+  // Set default currency: most recent expense's currency, or trip settlement currency
   useEffect(() => {
-    if (trip && !isEdit) {
-      setCurrency(trip.settlementCurrency)
+    if (!isEdit && trip) {
+      const lastCurrency = expenses.length > 0 ? expenses[0].currency : trip.settlementCurrency
+      setCurrency(lastCurrency)
     }
-  }, [trip, isEdit])
+  }, [trip, expenses, isEdit])
 
   const handleSubmit = async () => {
     if (!tripId || !password) return
