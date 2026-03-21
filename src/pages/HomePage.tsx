@@ -34,9 +34,7 @@ export default function HomePage() {
     <div className="flex min-h-screen flex-col px-6 py-12 md:max-w-md md:mx-auto">
       {/* Hero / Logo */}
       <div className="flex flex-col items-center pt-8 pb-10">
-        <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-primary-600 text-2xl font-bold text-white shadow-lg">
-          CB
-        </div>
+        <img src="/appicon.png" alt="ClothBill" className="mb-4 h-16 w-16 rounded-2xl shadow-lg" />
         <h1 className="text-2xl font-bold text-gray-900">ClothBill</h1>
         <p className="mt-1 text-sm text-gray-500">朋友账单分摊</p>
       </div>
