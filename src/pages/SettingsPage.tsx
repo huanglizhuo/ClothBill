@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useParams } from 'react-router-dom'
+import { useParams, useNavigate } from 'react-router-dom'
 import { useTrip } from '../hooks/useTrip'
 import { useTripStore } from '../store/tripStore'
 import { useLockToggle } from '../hooks/useLockToggle'
@@ -11,6 +11,7 @@ import CurrencyMultiSelect from '../components/shared/CurrencyMultiSelect'
 
 export default function SettingsPage() {
   const { tripId } = useParams<{ tripId: string }>()
+  const navigate = useNavigate()
   const { trip, members, expenses, currencies, reload } = useTrip(tripId)
   const { isEditable, password } = useTripStore()
   const { lockIcon, passwordModal } = useLockToggle(tripId)
@@ -20,6 +21,20 @@ export default function SettingsPage() {
   const [newMemberName, setNewMemberName] = useState('')
   const [error, setError] = useState('')
   const [saving, setSaving] = useState(false)
+
+  const handleDeleteTrip = async () => {
+    if (!tripId || !password) return
+    if (!confirm('确定要删除该旅行吗？删除后不可恢复，所有消费记录将被清除。')) return
+    setError('')
+    setSaving(true)
+    try {
+      await api.deleteTrip(tripId, password)
+      navigate('/')
+    } catch (err) {
+      setError(err instanceof Error ? err.message : '删除失败')
+      setSaving(false)
+    }
+  }
 
   if (!tripId) return null
 
@@ -266,6 +281,21 @@ export default function SettingsPage() {
             )}
           </div>
         </section>
+        {/* Danger Zone */}
+        {isEditable && (
+          <section className="rounded-2xl border border-red-200 bg-white p-4">
+            <h2 className="mb-3 text-sm font-semibold text-red-600">危险操作</h2>
+            <p className="mb-3 text-xs text-gray-500">删除旅行后，所有消费记录将被永久清除且不可恢复。</p>
+            <button
+              type="button"
+              onClick={handleDeleteTrip}
+              disabled={saving}
+              className="w-full rounded-lg border border-red-300 bg-red-50 py-2.5 text-sm font-medium text-red-600 active:bg-red-100 disabled:opacity-50"
+            >
+              删除旅行
+            </button>
+          </section>
+        )}
       </main>
 
       <BottomNav tripId={tripId} />

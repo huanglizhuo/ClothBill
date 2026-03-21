@@ -266,6 +266,17 @@ export async function updateMember(
   if (error) throw error
 }
 
+export async function deleteTrip(
+  tripId: string,
+  password: string
+): Promise<void> {
+  const { error } = await supabase.rpc('delete_trip', {
+    p_trip_id: tripId,
+    p_password: password,
+  })
+  if (error) throw error
+}
+
 export async function removeMember(
   tripId: string,
   password: string,
