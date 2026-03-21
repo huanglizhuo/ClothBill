@@ -61,10 +61,11 @@ export default function AddExpensePage() {
   // Set default payer and splits when members load
   useEffect(() => {
     if (members.length > 0 && !paidBy && !isEdit) {
-      setPaidBy(members[0].id)
+      const lastPayer = expenses.length > 0 ? expenses[0].paidBy : members[0].id
+      setPaidBy(lastPayer)
       setSplits(members.map((m) => ({ memberId: m.id })))
     }
-  }, [members, paidBy, isEdit])
+  }, [members, expenses, paidBy, isEdit])
 
   // Set default currency: most recent expense's currency, or trip settlement currency
   useEffect(() => {
