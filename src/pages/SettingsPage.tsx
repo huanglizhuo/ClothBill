@@ -24,7 +24,7 @@ export default function SettingsPage() {
 
   const handleDeleteTrip = async () => {
     if (!tripId || !password) return
-    if (!confirm('确定要删除该旅行吗？删除后不可恢复，所有消费记录将被清除。')) return
+    if (!confirm('确定要删除该账单吗？删除后不可恢复，所有消费记录将被清除。')) return
     setError('')
     setSaving(true)
     try {
@@ -263,7 +263,7 @@ export default function SettingsPage() {
 
           {/* Trip currencies */}
           <div>
-            <label className="mb-2 block text-xs text-gray-500">旅行使用的币种</label>
+            <label className="mb-2 block text-xs text-gray-500">账单使用的币种</label>
             {isEditable ? (
               <CurrencyMultiSelect
                 selected={currencies}
@@ -285,14 +285,14 @@ export default function SettingsPage() {
         {isEditable && (
           <section className="rounded-2xl border border-red-200 bg-white p-4">
             <h2 className="mb-3 text-sm font-semibold text-red-600">危险操作</h2>
-            <p className="mb-3 text-xs text-gray-500">删除旅行后，所有消费记录将被永久清除且不可恢复。</p>
+            <p className="mb-3 text-xs text-gray-500">删除账单后，所有消费记录将被永久清除且不可恢复。</p>
             <button
               type="button"
               onClick={handleDeleteTrip}
               disabled={saving}
               className="w-full rounded-lg border border-red-300 bg-red-50 py-2.5 text-sm font-medium text-red-600 active:bg-red-100 disabled:opacity-50"
             >
-              删除旅行
+              删除账单
             </button>
           </section>
         )}

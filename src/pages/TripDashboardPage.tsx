@@ -72,7 +72,7 @@ export default function TripDashboardPage() {
   return (
     <div className="min-h-screen bg-gray-50">
       <PageHeader
-        title={trip?.name ?? '旅行'}
+        title={trip?.name ?? '账单'}
         rightAction={lockIcon}
         onBack={() => navigate('/')}
       />
@@ -161,14 +161,13 @@ export default function TripDashboardPage() {
                     <p className="text-xs text-gray-400">
                       已付 {format(paidTotal, primaryCurrency)}
                     </p>
-                    <p className={`text-sm font-medium ${
-                      balance > 0.01 ? 'text-green-600' : balance < -0.01 ? 'text-red-500' : 'text-gray-500'
-                    }`}>
+                    <p className={`text-sm font-medium ${balance > 0.01 ? 'text-green-600' : balance < -0.01 ? 'text-red-500' : 'text-gray-500'
+                      }`}>
                       {balance > 0.01
                         ? `被欠 ${format(balance, settlementCurrency)}`
                         : balance < -0.01
-                        ? `欠 ${format(Math.abs(balance), settlementCurrency)}`
-                        : '已结清'}
+                          ? `欠 ${format(Math.abs(balance), settlementCurrency)}`
+                          : '已结清'}
                     </p>
                   </div>
                 )

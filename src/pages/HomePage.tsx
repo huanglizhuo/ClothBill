@@ -4,7 +4,7 @@ import CreateTripForm from '../components/trip/CreateTripForm'
 
 const UUID_RE = /[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/i
 
-type Mode = 'landing' | 'create' | 'join'
+type Mode = 'landing' | 'create'
 
 export default function HomePage() {
   const navigate = useNavigate()
@@ -27,7 +27,7 @@ export default function HomePage() {
       return
     }
 
-    setJoinError('请输入有效的旅行 ID 或链接')
+    setJoinError('请输入有效的账单 ID')
   }
 
   return (
@@ -38,31 +38,36 @@ export default function HomePage() {
           CB
         </div>
         <h1 className="text-2xl font-bold text-gray-900">ClothBill</h1>
-        <p className="mt-1 text-sm text-gray-500">朋友旅行分账</p>
+        <p className="mt-1 text-sm text-gray-500">朋友账单分摊</p>
       </div>
 
-      {mode === 'landing' && (
+      {/* Join trip — always visible */}
+      {mode !== 'create' && (
         <div className="space-y-4">
-          <button
-            type="button"
-            onClick={() => setMode('join')}
-            className="w-full rounded-2xl border border-gray-200 bg-white p-5 shadow-sm active:bg-gray-50 transition-colors"
-          >
-            <div className="flex items-center gap-4">
-              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary-50 text-primary-600">
-                <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
-                </svg>
-              </div>
-              <div className="text-left">
-                <p className="text-base font-semibold text-gray-900">加入已有旅行</p>
-                <p className="mt-0.5 text-sm text-gray-500">输入旅行 ID 或链接加入</p>
-              </div>
-              <svg className="ml-auto h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
-              </svg>
+          <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
+            <h2 className="mb-3 text-base font-semibold text-gray-800">加入已有账单</h2>
+            <div className="space-y-3">
+              <input
+                type="text"
+                value={joinInput}
+                onChange={(e) => {
+                  setJoinInput(e.target.value)
+                  setJoinError('')
+                }}
+                placeholder="输入账单 ID"
+                className="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500"
+              />
+              {joinError && <p className="text-sm text-red-500">{joinError}</p>}
+              <button
+                type="button"
+                onClick={handleJoin}
+                disabled={!joinInput.trim()}
+                className="w-full rounded-lg bg-gray-900 py-2.5 text-sm font-medium text-white active:bg-gray-800 disabled:opacity-50"
+              >
+                加入账单
+              </button>
             </div>
-          </button>
+          </div>
 
           <button
             type="button"
@@ -76,8 +81,8 @@ export default function HomePage() {
                 </svg>
               </div>
               <div className="text-left">
-                <p className="text-base font-semibold text-gray-900">创建新旅行</p>
-                <p className="mt-0.5 text-sm text-gray-500">发起一次新的旅行分账</p>
+                <p className="text-base font-semibold text-gray-900">创建新账单</p>
+                <p className="mt-0.5 text-sm text-gray-500">发起一次新的账单分摊</p>
               </div>
               <svg className="ml-auto h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
@@ -85,45 +90,6 @@ export default function HomePage() {
             </div>
           </button>
         </div>
-      )}
-
-      {mode === 'join' && (
-        <section>
-          <button
-            type="button"
-            onClick={() => { setMode('landing'); setJoinInput(''); setJoinError('') }}
-            className="mb-4 flex items-center gap-1 text-sm text-gray-500 active:text-gray-700"
-          >
-            <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
-            </svg>
-            返回
-          </button>
-          <h2 className="mb-4 text-lg font-semibold text-gray-800">加入已有旅行</h2>
-          <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
-            <div className="space-y-3">
-              <input
-                type="text"
-                value={joinInput}
-                onChange={(e) => {
-                  setJoinInput(e.target.value)
-                  setJoinError('')
-                }}
-                placeholder="输入旅行 ID 或链接"
-                className="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500"
-              />
-              {joinError && <p className="text-sm text-red-500">{joinError}</p>}
-              <button
-                type="button"
-                onClick={handleJoin}
-                disabled={!joinInput.trim()}
-                className="w-full rounded-lg bg-gray-900 py-2.5 text-sm font-medium text-white active:bg-gray-800 disabled:opacity-50"
-              >
-                加入旅行
-              </button>
-            </div>
-          </div>
-        </section>
       )}
 
       {mode === 'create' && (
@@ -138,7 +104,7 @@ export default function HomePage() {
             </svg>
             返回
           </button>
-          <h2 className="mb-4 text-lg font-semibold text-gray-800">创建新旅行</h2>
+          <h2 className="mb-4 text-lg font-semibold text-gray-800">创建新账单</h2>
           <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
             <CreateTripForm />
           </div>

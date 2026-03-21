@@ -203,9 +203,9 @@ export default function CreateTripForm() {
       {/* Trip currencies */}
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-1">
-          旅行使用的币种
+          账单使用的币种
         </label>
-        <p className="mb-2 text-xs text-gray-500">选择此次旅行中会用到的货币</p>
+        <p className="mb-2 text-xs text-gray-500">选择此次账单中会用到的货币</p>
         <CurrencyMultiSelect
           selected={selectedCurrencies}
           onChange={handleCurrenciesChange}
