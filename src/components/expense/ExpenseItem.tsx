@@ -52,12 +52,12 @@ export default function ExpenseItem({ expense, members, onDelete, editable }: Ex
 
       {/* Description, date, payer */}
       <div className="min-w-0 flex-1">
-        <p className="truncate text-sm font-medium text-gray-900">
+        <p className="text-sm font-medium text-gray-900 break-words">
           {expense.description || '未命名'}
         </p>
-        <p className="mt-0.5 text-xs text-gray-400">
-          {expense.date.slice(0, 10)} · {payer?.name ?? '未知'} 付款 · {splitDetail}
-        </p>
+        <p className="mt-0.5 text-xs text-gray-400">{expense.date.slice(0, 10)}</p>
+        <p className="mt-0.5 text-xs text-gray-400">{payer?.name ?? '未知'} 付款</p>
+        <p className="mt-0.5 text-xs text-gray-400">{splitDetail}</p>
         {expense.category === 'accommodation' && (expense.checkIn || expense.checkOut) && (
           <p className="mt-0.5 text-xs text-blue-400">
             {expense.checkIn ? `入住 ${expense.checkIn}` : ''}

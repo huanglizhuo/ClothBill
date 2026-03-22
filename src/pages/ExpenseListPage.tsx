@@ -52,12 +52,27 @@ function getGroupLabel(key: string, groupBy: GroupBy, members: Member[]): string
   }
 }
 
+interface CurrencyTotal {
+  currency: string
+  total: number
+}
+
 interface ExpenseGroup {
   key: string
   label: string
   expenses: Expense[]
-  total: number
-  currency: string
+  currencyTotals: CurrencyTotal[]
+}
+
+function getExpenseAmountForGroup(expense: Expense, groupBy: GroupBy, memberKey: string): number {
+  if (groupBy !== 'member') return expense.amount
+  // For member grouping, show the member's share, not the full amount
+  const split = expense.splits.find((s) => s.memberId === memberKey)
+  if (!split) return 0
+  if (expense.splitType === 'equal') return expense.amount / expense.splits.length
+  if (expense.splitType === 'exact') return split.shareAmount ?? 0
+  if (expense.splitType === 'percentage') return ((split.sharePercentage ?? 0) / 100) * expense.amount
+  return 0
 }
 
 function groupExpenses(expenses: Expense[], groupBy: GroupBy, members: Member[]): ExpenseGroup[] {
@@ -73,26 +88,29 @@ function groupExpenses(expenses: Expense[], groupBy: GroupBy, members: Member[])
   }
 
   const groups: ExpenseGroup[] = Array.from(map.entries()).map(([key, exps]) => {
-    const total = exps.reduce((sum, e) => sum + e.amount, 0)
-    const currencyCount = new Map<string, number>()
+    // Calculate totals per currency
+    const currencyMap = new Map<string, number>()
     for (const e of exps) {
-      currencyCount.set(e.currency, (currencyCount.get(e.currency) ?? 0) + 1)
+      const amt = getExpenseAmountForGroup(e, groupBy, key)
+      currencyMap.set(e.currency, (currencyMap.get(e.currency) ?? 0) + amt)
     }
-    const currency = [...currencyCount.entries()].sort((a, b) => b[1] - a[1])[0]?.[0] ?? ''
+    const currencyTotals = Array.from(currencyMap.entries())
+      .map(([currency, total]) => ({ currency, total: Math.round(total * 100) / 100 }))
+      .sort((a, b) => b.total - a.total)
 
     return {
       key,
       label: getGroupLabel(key, groupBy, members),
       expenses: exps,
-      total,
-      currency,
+      currencyTotals,
     }
   })
 
   if (groupBy === 'date') {
     groups.sort((a, b) => b.key.localeCompare(a.key))
   } else {
-    groups.sort((a, b) => b.total - a.total)
+    // Sort by first currency total (primary)
+    groups.sort((a, b) => (b.currencyTotals[0]?.total ?? 0) - (a.currencyTotals[0]?.total ?? 0))
   }
 
   return groups
@@ -117,7 +135,27 @@ export default function ExpenseListPage() {
   )
 
   const chartItems = useMemo(
-    () => groups.map((g) => ({ label: g.label, amount: g.total, currency: g.currency })),
+    () => {
+      // Collect all currencies across all groups
+      const allCurrencies = [...new Set(groups.flatMap((g) => g.currencyTotals.map((ct) => ct.currency)))]
+
+      if (allCurrencies.length <= 1) {
+        // Single currency: one bar per group
+        const cur = allCurrencies[0] ?? ''
+        return [{ currency: cur, items: groups.map((g) => ({ label: g.label, amount: g.currencyTotals[0]?.total ?? 0, currency: cur })) }]
+      }
+
+      // Multiple currencies: one chart per currency
+      return allCurrencies.map((cur) => ({
+        currency: cur,
+        items: groups
+          .map((g) => {
+            const ct = g.currencyTotals.find((c) => c.currency === cur)
+            return { label: g.label, amount: ct?.total ?? 0, currency: cur }
+          })
+          .filter((item) => item.amount > 0),
+      })).filter((c) => c.items.length > 0)
+    },
     [groups]
   )
 
@@ -275,8 +313,15 @@ export default function ExpenseListPage() {
         {/* Expense list / chart */}
         {expenses.length > 0 ? (
           viewMode === 'chart' ? (
-            <div className="rounded-2xl border border-gray-200 bg-white p-4">
-              <ExpenseChart items={chartItems} />
+            <div className="space-y-4">
+              {chartItems.map((chartGroup) => (
+                <div key={chartGroup.currency} className="rounded-2xl border border-gray-200 bg-white p-4">
+                  {chartItems.length > 1 && (
+                    <h3 className="mb-3 text-xs font-semibold text-gray-500">{chartGroup.currency}</h3>
+                  )}
+                  <ExpenseChart items={chartGroup.items} />
+                </div>
+              ))}
             </div>
           ) : (
             <div className="space-y-4">
