@@ -7,12 +7,13 @@ import { useLockToggle } from '../hooks/useLockToggle'
 import PageHeader from '../components/layout/PageHeader'
 import BottomNav from '../components/layout/BottomNav'
 import PerCurrencyBreakdown from '../components/settlement/PerCurrencyBreakdown'
+import OverallSettlement from '../components/settlement/OverallSettlement'
 import EmptyState from '../components/shared/EmptyState'
 
 export default function SettlementPage() {
   const { tripId } = useParams<{ tripId: string }>()
   const { members, expenses } = useTrip(tripId)
-  const { perCurrencySettlements, settlementCurrency } = useSettlement()
+  const { perCurrencySettlements, settlementCurrency, balances, overallSimplifiedTransfers, overallDirectTransfers } = useSettlement()
   const { exchangeRates } = useCurrency()
   const { averageRates, dateRange, isLoading: ratesLoading, errorType } = useHistoricalRates(expenses, settlementCurrency)
   const { lockIcon, passwordModal } = useLockToggle(tripId)
@@ -52,6 +53,20 @@ export default function SettlementPage() {
           <div className="rounded-lg bg-yellow-50 border border-yellow-200 p-3 text-sm text-yellow-700">
             历史汇率获取失败，使用实时汇率替代
           </div>
+        )}
+
+        {/* Overall settlement: only show for multi-currency with rates available */}
+        {perCurrencySettlements.size > 1 && effectiveRates != null && (
+          <OverallSettlement
+            balances={balances}
+            directTransfers={overallDirectTransfers}
+            simplifiedTransfers={overallSimplifiedTransfers}
+            perCurrencySettlements={perCurrencySettlements}
+            members={members}
+            settlementCurrency={settlementCurrency}
+            exchangeRates={effectiveRates}
+            dateRange={dateRange}
+          />
         )}
 
         <PerCurrencyBreakdown

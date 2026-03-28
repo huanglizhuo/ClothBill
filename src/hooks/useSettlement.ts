@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 import { useTripStore } from '../store/tripStore'
 import { useSettingsStore } from '../store/settingsStore'
-import { calculatePerCurrencySettlements } from '../lib/settlement'
+import { calculatePerCurrencySettlements, simplifyDebts, calcDirectDebtsFromBalances } from '../lib/settlement'
 import { convertAmount } from '../lib/currency'
 
 export function useSettlement() {
@@ -34,5 +34,16 @@ export function useSettlement() {
     return result
   }, [perCurrencySettlements, effectiveRates, settlementCurrency, members])
 
-  return { balances, perCurrencySettlements, settlementCurrency }
+  // Overall simplified and direct transfers across all currencies
+  const overallSimplifiedTransfers = useMemo(
+    () => simplifyDebts(balances),
+    [balances]
+  )
+
+  const overallDirectTransfers = useMemo(
+    () => calcDirectDebtsFromBalances(balances),
+    [balances]
+  )
+
+  return { balances, perCurrencySettlements, settlementCurrency, overallSimplifiedTransfers, overallDirectTransfers }
 }
