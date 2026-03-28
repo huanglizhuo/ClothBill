@@ -8,6 +8,7 @@ interface PerCurrencyBreakdownProps {
   members: Member[]
   settlementCurrency: string
   exchangeRates: ExchangeRates | null
+  dateRange?: { from: string; to: string } | null
   tripId: string
 }
 
@@ -16,6 +17,7 @@ export default function PerCurrencyBreakdown({
   members,
   settlementCurrency,
   exchangeRates,
+  dateRange,
   tripId,
 }: PerCurrencyBreakdownProps) {
   if (perCurrencySettlements.size === 0) return null
@@ -37,6 +39,7 @@ export default function PerCurrencyBreakdown({
             memberMap={memberMap}
             settlementCurrency={settlementCurrency}
             exchangeRates={exchangeRates}
+            dateRange={dateRange}
             tripId={tripId}
           />
         )
@@ -56,6 +59,7 @@ function CurrencyCard({
   memberMap,
   settlementCurrency,
   exchangeRates,
+  dateRange,
   tripId,
 }: {
   currency: string
@@ -66,6 +70,7 @@ function CurrencyCard({
   memberMap: Map<string, Member>
   settlementCurrency: string
   exchangeRates: ExchangeRates | null
+  dateRange?: { from: string; to: string } | null
   tripId: string
 }) {
   const [simplified, setSimplified] = useState(false)
@@ -130,7 +135,16 @@ function CurrencyCard({
       {/* Exchange rate footer */}
       {rate != null && (
         <div className="border-t border-gray-100 px-4 py-2 text-xs text-primary-700 bg-primary-50/50">
-          汇率: 1 {currency} = {rate.toFixed(4)} {settlementCurrency}
+          {dateRange ? (
+            <>
+              <div>平均汇率: 1 {currency} = {rate.toFixed(4)} {settlementCurrency}</div>
+              <div className="text-[10px] text-gray-400 mt-0.5">
+                基于 {dateRange.from} ~ {dateRange.to} 期间平均汇率
+              </div>
+            </>
+          ) : (
+            <>汇率: 1 {currency} = {rate.toFixed(4)} {settlementCurrency}</>
+          )}
         </div>
       )}
     </div>

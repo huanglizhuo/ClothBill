@@ -9,6 +9,7 @@ dist-ssr
 .env
 .env.local
 .env.*.local
+.dev.vars
 
 # Logs
 logs
@@ -35,3 +36,4 @@ Thumbs.db
 
 # Supabase local
 supabase/.temp
+.wrangler/

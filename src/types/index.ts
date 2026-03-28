@@ -41,6 +41,13 @@ export interface ExchangeRates {
   fetchedAt: number;
 }
 
+export interface AverageExchangeRates {
+  base: string;
+  rates: Record<string, number>;
+  dateRange: { from: string; to: string };
+  fetchedAt: number;
+}
+
 export interface SettlementTransfer {
   from: string;    // member id
   to: string;      // member id

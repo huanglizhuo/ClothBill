@@ -75,7 +75,7 @@ function getExpenseAmountForGroup(expense: Expense, groupBy: GroupBy, memberKey:
   return 0
 }
 
-function groupExpenses(expenses: Expense[], groupBy: GroupBy, members: Member[]): ExpenseGroup[] {
+function groupExpenses(expenses: Expense[], groupBy: GroupBy, members: Member[], dateAsc: boolean): ExpenseGroup[] {
   const map = new Map<string, Expense[]>()
 
   for (const expense of expenses) {
@@ -107,7 +107,7 @@ function groupExpenses(expenses: Expense[], groupBy: GroupBy, members: Member[])
   })
 
   if (groupBy === 'date') {
-    groups.sort((a, b) => b.key.localeCompare(a.key))
+    groups.sort((a, b) => dateAsc ? a.key.localeCompare(b.key) : b.key.localeCompare(a.key))
   } else {
     // Sort by first currency total (primary)
     groups.sort((a, b) => (b.currencyTotals[0]?.total ?? 0) - (a.currencyTotals[0]?.total ?? 0))
@@ -124,14 +124,15 @@ export default function ExpenseListPage() {
   const { lockIcon, passwordModal } = useLockToggle(tripId)
 
   const [groupBy, setGroupBy] = useState<GroupBy>('date')
+  const [dateAsc, setDateAsc] = useState(false)
   const [viewMode, setViewMode] = useState<ViewMode>('list')
   const [newMemberName, setNewMemberName] = useState('')
   const [addingMember, setAddingMember] = useState(false)
   const [showAddMember, setShowAddMember] = useState(false)
 
   const groups = useMemo(
-    () => groupExpenses(expenses, groupBy, members),
-    [expenses, groupBy, members]
+    () => groupExpenses(expenses, groupBy, members, dateAsc),
+    [expenses, groupBy, members, dateAsc]
   )
 
   const chartItems = useMemo(
@@ -292,6 +293,29 @@ export default function ExpenseListPage() {
             ))}
           </div>
 
+          <div className="flex items-center gap-1">
+            {groupBy === 'date' && (
+              <button
+                type="button"
+                onClick={() => setDateAsc(!dateAsc)}
+                className="rounded-lg p-1.5 text-gray-400 active:bg-gray-100"
+                aria-label={dateAsc ? '日期降序' : '日期升序'}
+              >
+                <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+                  {dateAsc ? (
+                    <>
+                      <path d="M12 5v14" />
+                      <path d="M5 12l7-7 7 7" />
+                    </>
+                  ) : (
+                    <>
+                      <path d="M12 5v14" />
+                      <path d="M19 12l-7 7-7-7" />
+                    </>
+                  )}
+                </svg>
+              </button>
+            )}
           <button
             type="button"
             onClick={() => setViewMode(viewMode === 'list' ? 'chart' : 'list')}
@@ -308,6 +332,7 @@ export default function ExpenseListPage() {
               </svg>
             )}
           </button>
+          </div>
         </div>
 
         {/* Expense list / chart */}
