@@ -93,12 +93,12 @@ function CurrencyCard({
         <button
           type="button"
           onClick={() => setSimplified(!simplified)}
-          className={`rounded-full px-2.5 py-1 text-[10px] font-medium transition-colors ${simplified
-            ? 'bg-primary-600 text-white'
-            : 'bg-gray-100 text-gray-500 active:bg-gray-200'
+          className={`rounded-full px-3 py-1.5 text-xs font-medium transition-colors border ${simplified
+            ? 'bg-primary-600 text-white border-primary-600'
+            : 'bg-white text-primary-600 border-primary-400 active:bg-primary-50'
             }`}
         >
-          {simplified ? '已简化' : '账单简化版计算详情'}
+          {simplified ? '收起详情 ▲' : '查看计算详情 ▼'}
         </button>
       </div>
 
